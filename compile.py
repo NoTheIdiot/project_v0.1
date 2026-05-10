@@ -14,7 +14,7 @@ def run_cmd(command):
     subprocess.run(command, shell=True)
 
 # main so it can infact, compile
-with open("compile.txt", "r") as file:
+with open("compilefile", "r") as file:
     random_var = 1                              # loop var for readability
     for doge in file:
         doge = doge.strip()                     # strip away newlines or spaces
