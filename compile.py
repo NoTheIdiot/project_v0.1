@@ -35,11 +35,11 @@ with open("compilefile", "r") as file:
             result = run_cmd(shibe)
             random_var += 1
 
+
+iso_created = False
+
 if os.path.exists("isoroot"):
-    # iso var is compiled
-    iso_created = False
-    
-    # continue
+     # continue
     shutil.rmtree("isoroot")
 
     os.makedirs("isoroot/boot/grub", exist_ok=True)
