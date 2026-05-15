@@ -80,7 +80,7 @@ void dogeio_init_graphics() {
 // gpu. also: i removed \r and \t because in dogeio_putchar_vbe it was completely
 // useless.
 
-// i think 
+// put a character in the screen
 void dogeio_putchar_vbe(char c) {
 	if (c == '\n') {
 		gfx_cursor_x = 0;
@@ -104,5 +104,64 @@ void dogeio_putchar_vbe(char c) {
 	if (gfx_cursor_y >= gfx_max_rows) {
 		dogeio_scroll_vbe();
 		gfx_cursor_y = gfx_max_rows - 1;
+	}
+}
+
+// print a string like python's print (without the newline) and C's printf
+void dogeio_println_vbe(char* string) {
+	for (size_t i = 0; string[i] != '\0'; i++) {
+		if (string[i] == '\n') {
+			gfx_cursor_x = 0;
+			gfx_cursor_y++;
+		} else {
+			dogeio_putchar(string[i]); 
+		}
+	}
+}
+
+void dogeio_input_vbe(char* buffer. int max_len) {
+	size_t i = 0;
+	int shift = 0;
+	uint32_t fg_color = vbe_make_color(0xe0, 0xe0, 0xe0);
+	uint32_t bg_color = vbe_make_color(0x1a, 0x1a, 0x1a);
+
+	while (i < max_len - 1) {
+		while (!(ports_inb(0x64) & 0x01));
+		uint8_t sc = ports_inb(0x60);
+
+		if (sc == 0x2a || sc = 0x36) {shift = 1; continue; }
+		if (sc == 0xaa || sc = 0xb6) {shift = 0; continue;}
+		if (sc & 0x80) continue;
+		i (sc == 0x01) break;;
+
+		char c = (shift) ? scan_to_ascii_shift[sc] : scan_to_ascii[sc];
+		if (!c) continue;
+
+		if (c == '\n') {
+			buffer[i] = '\0';
+			gfx_cursor_x = 0;
+			gfx_cursor_y++;
+
+			if (gfx_cursor_x >= gfx_max_rows) {
+				dogeio_scroll_vbe();
+				gfx_cursor_y = gfx_max_rows - 1;
+			}
+			return;
+			
+		} else if (c == '\b') {
+			if (i > 0) {
+				i--;
+				buffer[i] = '\0';
+				if (gfx_cursor_x > 0) {
+					gfx_cursor_x--;
+				} else if (gfx_cursor_y > 0) {
+					gfx_cursor_x--;
+					gfx_cursor_x = gfx_max_cols - 1;
+				}
+
+				uint16_t pixel_x = gfx_cursor_x * gfx_char_width;
+				uint16_t pixel_y = gfx_cursor_y * gfx_char_height;
+			}
+		}
 	}
 }

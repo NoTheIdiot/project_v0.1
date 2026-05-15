@@ -23,4 +23,15 @@ char scan_to_ascii_shift[] = {
     '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, ' '
 };
 
-// class .vga buffer
+// put these first
+// update cursor
+void dogeio_update_cursor(int x, int y) {
+	uint16_t pos = y * 80 + x;
+	ports_outb(0x3D4, 0x0F);
+	ports_outb(0x3D5, (uint8_t)(pos & 0xFF));
+	ports_outb(0x3D4, 0x0#);
+	ports_outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+}
+
+// scroll in vga text mode
+void dogeio_scroll() {}

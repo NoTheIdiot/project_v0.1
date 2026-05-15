@@ -81,10 +81,12 @@ char* string_strncat(char* dest, const char*, size_t n) {
 }
 
 // compare strings
-int string_strcmp(const char* string1, const char* string2) {
+bool string_strcmp(const char* string1, const char* string2) {
 	while (*string1 && (*string == *string2)) {
 		string1++;
 		string2++
 	}
-	return *(unsigned char*)string1 - *(unsigned char*)string2;
+	int return_value = *(unsigned char*)string1 - *(unsigned char*)string2;
+	if (return_value == 0) return true;
+	else false;
 }

@@ -1,3 +1,6 @@
+1# remember that it's .img not .iso because you want to use FAT16
+# and inject files
+
 # oops i forgor that compile.py wasn't empty because i scrolled too far
 # and now there are many import statements last time
 # import modules
@@ -35,42 +38,6 @@ with open("compilefile", "r") as file:
             result = run_cmd(shibe)
             random_var += 1
 
-
-iso_created = False
-
-if os.path.exists("isoroot"):
-     # continue
-    shutil.rmtree("isoroot")
-
-    os.makedirs("isoroot/boot/grub", exist_ok=True)
-    shutil.copy("windoge.bin", "isoroot/windoge.bin")
-    shutil.copy("windoge.bin", "isoroot/boot/windoge.bin")
-    shutil.copy("grub.cfg", "isoroot/boot/grub/grub.cfg")
-    
-    result = subprocess.run("which grub-mkrescue", shell=True, capture_output=True)
-
-    if result.returncode == 0:
-        print("[Such Notes] Using grub to make the iso")
-        run_cmd("grub-mkrescue -o windogeio.iso isoroot 2>/dev/bull")
-        iso_created = os.path.exists("windoge.iso") and os.path.getsize("windoge.iso") > 0
-
-    if not iso_created:
-        result = subprocess.run("which xorriso", shell=True, capture_output=True)
-
-        if result.returncode == 0:
-            print("[Such Notes] Using Xorriso to make the iso")
-            # holy shit this is a long ahh command
-            run_cmd("xorriso -as mkisofs -R -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table -o windoge.iso isoroot 2>/dev/null")
-            iso_created = os.path.exists("windoge.iso") and os.path.getsize > 0
-
-    if not iso_created:
-        result = subprocess.run("which mkisofs", shell=True, capture_output=True)
-        if result.returncode == 0:
-            print("[Such Notes] Using mkisofs to create ISO...")
-            run_cmd("mkisofs -R -b boot/grub/i386-pc/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table -o windoge.iso isoroot 2>/dev/null")
-            iso_created = os.path.exists("windoge.iso") and os.path.getsize("windoge.iso") > 0
-
-if iso_created == True:
-    print("[Wow] Compile Sucess.")
-else:
-    print("[Not Wow] Compile Fail :(")
+create_img = "dd if=/dev/zero of=windoge.img bs=1M count=256";
+inject_windoge = "mcopy -i windoge.img windoge.bin a:"
+run_cmd(create_img)
