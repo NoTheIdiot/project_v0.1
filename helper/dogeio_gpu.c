@@ -19,7 +19,7 @@ uint16_t gfx_max_rows = 0;
 
 // i think i should put this first since it's used in the init
 // graphics function
-void dogeio_clear_screen_graphics {
+void dogeio_clear_screen_vbe() {
 	uint32_t bg_color = vbe_make_color(0x1a, 0x1a, 0x1a);
 	for (uint16_t y = 0; y < vbe_height; y++) {
 		for (uint16 x = 0; x < vbe_width; x++) {
@@ -32,7 +32,7 @@ void dogeio_clear_screen_graphics {
 }
 
 // to scroll, but does it work? probaly not.
-void dogeio_scroll_graphics() {
+void dogeio_scroll_vbe() {
 	uint8_t* frame_buffer = (uint8_t*)vbe_frame_buffer;
 	size_t row_bytes = (size_t)vbe_pitch * gfx_char_height;
 	size_t total_bytes = (size_t)vbe_pitch * vbe_height;
@@ -54,7 +54,7 @@ void dogeio_scroll_graphics() {
 }
 
 // initalize vbe from multiboot
-void dogeio_init_graphics_from_multiboot(multiboot_info_t* mbi) {
+void dogeio_init_vbe_mbi(multiboot_info_t* mbi) {
 	vbe_init_from_multiboot(mbi);
 
 	// check if it's able to initiazile vbe, if it doesn't, dont.
@@ -69,7 +69,7 @@ void dogeio_init_graphics_from_multiboot(multiboot_info_t* mbi) {
 }
 
 // normal init vbe
-void dogeio_init_graphics() {
+void dogeio_init_vbe() {
 	gfx_max_cols = vbe_width / gfx_char_width;
 	gfx_max_rows = vbe_height / gfx_char_height;
 	dogeio_clear_screen_graphics();
