@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <dogeio.h>
+#include <dogeports.h>
 #include <dogebool.h>
 
 // ________________ATA PIO DRIVER_________________
@@ -20,11 +21,8 @@
 #define ATA_SR_DRQ  0x08
 #define ATA_SR_ERR  0x01
 
-extern uint8_t inb(uint16_t port);
-extern void outb(uint16_t port, uint8_t val);
-extern void insw(uint16_t port, void* addr, int count);
-
-static void ata_wait_ready() {
+// basic functions
+void ata_wait_ready() {
     while (inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_BSY);
 }
 
