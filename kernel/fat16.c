@@ -28,15 +28,15 @@ void ata_wait_ready() {
 
 int ata_read_sector(uint32_t lba, uint8_t* buffer) {
     ata_wait_ready();
-    outb(ATA_PRIMARY_IO + ATA_REG_SECCOUNT, 1);
-    outb(ATA_PRIMARY_IO + ATA_REG_LBA0, (uint8_t)(lba));
-    outb(ATA_PRIMARY_IO + ATA_REG_LBA1, (uint8_t)(lba >> 8));
-    outb(ATA_PRIMARY_IO + ATA_REG_LBA2, (uint8_t)(lba >> 16));
-    outb(ATA_PRIMARY_IO + ATA_REG_HDDEVSEL, 0xE0 | ((lba >> 24) & 0x0F));
-    outb(ATA_PRIMARY_IO + ATA_REG_COMMAND, ATA_CMD_READ_SECTORS);
-    while (!(inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_DRQ));
-    insw(ATA_PRIMARY_IO + ATA_REG_DATA, buffer, 256);
-    if (inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_ERR) return -1;
+    ports_outb(ATA_PRIMARY_IO + ATA_REG_SECCOUNT, 1);
+    ports_outb(ATA_PRIMARY_IO + ATA_REG_LBA0, (uint8_t)(lba));
+    ports_outb(ATA_PRIMARY_IO + ATA_REG_LBA1, (uint8_t)(lba >> 8));
+    ports_outb(ATA_PRIMARY_IO + ATA_REG_LBA2, (uint8_t)(lba >> 16));
+   	ports_outb(ATA_PRIMARY_IO + ATA_REG_HDDEVSEL, 0xE0 | ((lba >> 24) & 0x0F));
+    porst_outb(ATA_PRIMARY_IO + ATA_REG_COMMAND, ATA_CMD_READ_SECTORS);
+    while (!(ports_inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_DRQ));
+    ports_insw(ATA_PRIMARY_IO + ATA_REG_DATA, buffer, 256);
+    if (ports_inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_ERR) return -1;
     return 0;
 }
 
