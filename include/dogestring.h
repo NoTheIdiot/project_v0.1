@@ -12,5 +12,6 @@ char* string_commbinelimit(char* dest, const char* src, size_t n);
 char* string_strcat(char* dest, const char* src);
 char* string_strncat(char* dest, const char* src, size_t n);
 bool string_strcmp(const char* string1, const char* string2);
+bool string_startsWtih(const char* str, const char* prefix);
 
 #endif
