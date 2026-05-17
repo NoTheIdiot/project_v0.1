@@ -10,8 +10,8 @@
 
 extern char* windoge_full_version;
 extern char* windoge_short_version;
-extern void meta_sysinfo();
-extern void meta_dogescript(char* filename);
+extern void others_sysinfo();
+extern void others_dogescript(char* filename);
 
 void doge_shell() {
 	char command[64];
@@ -43,7 +43,7 @@ void doge_shell() {
 		}
 
 		if (string_startsWith(command, "dogescript")) {
-			meta_dogescript(command + 10);
+			others_dogescript(command + 10);
 		}
 
 		if (string_strcmp(command, "halt")) {

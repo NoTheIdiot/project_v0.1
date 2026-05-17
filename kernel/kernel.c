@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <dogeio.c>
+#include <dogeio.c>all
 #include <dogestring.h>
 #include <dogeports.h>
 #include <dogemath.h>
@@ -9,7 +9,8 @@
 #include <consts.h>
 #include <dogeio_gpu.h>
 #include <dogevbe.h>
-#include <fat16.h>
+#include "fat16.h"
+#include "info.h"
 
 extern void doge_shell();
 extern void such_boot_check();
@@ -24,9 +25,9 @@ int main(uint32_t magic, multiboot_info_t* mbi) {
 	dogeio_init_vbe_mbi();
 	dogeio_init_vbe();
 	dogeio_println("[Wow] Init done.");
-	
+
 	// record boot time
-	char* such_boot_time = time_get_raw();
+	record_boot_time();
 	
 	dogeio_print("[Note] Such boot time is ");
 	time_show();
