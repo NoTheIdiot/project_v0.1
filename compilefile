@@ -1,0 +1,23 @@
+# boot
+dogec -c boot.asm -o boot.o
+
+# helpers
+dogec -c helper/dogeio.c -o dogeio.o
+dogec -c helper/dogeio_vbe.c -o dogeio_vbe.o
+dogec -c helper/dogemath.c -o dogemath.o
+dogec -c helper/dogeports.c -o dogeports.o
+dogec -c helper/dogestring.c -o dogestring.o
+dogec -c helper/dogevbe.c -o dogevbe.o
+dogec -c helper/font.c -o font.o
+dogec -c helper/time.c -o time.o
+
+# kernel
+dogec -c kernel/dogeshell.c -o dogeshell.o
+dogec -c kernel/fat16.c -o fat16.o
+dogec -c kernel/info.c -o info.o
+dogec -c kernel/others.c -o others.o
+dogec -c kernel/suchboot.c -o suchboot.o
+dogec -c kernel/kernel.c -o kernel.o
+
+# link
+ld -m elf_i386 -T linker/linker.ld -o windogeOS.bin boot.o kernel.o dogeio.p dogeio_vbe.o dogemath.o dogeports.o dogestring.o dogevbe.o font.o time.o dogeshell.o fat16.o info.o others.o suchboot.o

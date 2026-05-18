@@ -1,14 +1,14 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <dogeio.c>all
-#include <dogestring.h>
-#include <dogeports.h>
-#include <dogemath.h>
-#include <font.h>
-#include <dogebool.h>
-#include <consts.h>
-#include <dogeio_gpu.h>
-#include <dogevbe.h>
+#include "dogeio.c"
+#include "dogestring.h"
+#include "dogeports.h"
+#include "dogemath.h"
+#include "font.h"
+#include "dogebool.h"
+#include "consts.h"
+#include "dogeio_gpu.h"
+#include "dogevbe.h"
 #include "fat16.h"
 #include "info.h"
 
