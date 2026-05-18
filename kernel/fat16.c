@@ -1,9 +1,12 @@
+// oh hell no i just started using vscode and there are 9+ errors
+// is it over
+
 // include files
 #include <stdint.h>
 #include <stddef.h>
-#include <dogeio.h>
-#include <dogeports.h>
-#include <dogebool.h>
+#include "../include/fat16.h"
+#include "dogeports.h"
+#include "dogebool.h"
 
 // ________________ATA PIO DRIVER_________________
 #define ATA_PRIMARY_IO 		0x1F0
@@ -15,6 +18,7 @@
 #define ATA_REG_HDDEVSEL   0x06
 #define ATA_REG_COMMAND    0x07
 #define ATA_REG_STATUS     0x07
+#define ATA_REG_SECCOUNT   0x02
 
 #define ATA_CMD_READ_SECTORS  0x20
 #define ATA_SR_BSY  0x80
@@ -33,7 +37,7 @@ int ata_read_sector(uint32_t lba, uint8_t* buffer) {
     ports_outb(ATA_PRIMARY_IO + ATA_REG_LBA1, (uint8_t)(lba >> 8));
     ports_outb(ATA_PRIMARY_IO + ATA_REG_LBA2, (uint8_t)(lba >> 16));
    	ports_outb(ATA_PRIMARY_IO + ATA_REG_HDDEVSEL, 0xE0 | ((lba >> 24) & 0x0F));
-    porst_outb(ATA_PRIMARY_IO + ATA_REG_COMMAND, ATA_CMD_READ_SECTORS);
+    ports_outb(ATA_PRIMARY_IO + ATA_REG_COMMAND, ATA_CMD_READ_SECTORS);
     while (!(ports_inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_DRQ));
     ports_insw(ATA_PRIMARY_IO + ATA_REG_DATA, buffer, 256);
     if (ports_inb(ATA_PRIMARY_IO + ATA_REG_STATUS) & ATA_SR_ERR) return -1;
@@ -79,30 +83,30 @@ typedef struct {
 	uint32_t file_size;
 } FileEntry;
 
-Bootsector g_bs;
-unit32_t g_first_data_sector
+BootSector g_bs;
+uint32_t g_first_data_sector;
 uint32_t g_root_dir;
 FileEntry g_file_table[256];
 int g_file_count = 0;
 
 //__________________INIT FAT16______________________________
 void disk_init(uint32_t lba_start) {
-	uint8_t buffer[512];
-	ata_read_sector(lba_start, buffer);
+	uint8_t buffer[512]; // what did i just write is this char or uint8_t
+	ata_read_sector(lba_start, buffer); // finna fix this
 	uint32_t root_dir_sectors = ((g_bs.root_entries * 32) + (g_bs.bytes_per_sector - 1)) / g_bs.bytes_per_sector;
-	g_root_dir_lba = lba_start + g_bs.reserved_sectors + (g_bs.num_fats * g_bs.sectors_per_fat);
+	uint32_t g_root_dir_lba = lba_start + g_bs.reserved_sectors + (g_bs.num_fats * g_bs.sectors_per_fat);
 	g_first_data_sector = g_root_dir_lba + root_dir_sectors;
 }
 
 //________________OTHERS___________________________________
-uint16_t disk_next_cluster(uint16_t cluster, uint32)t fat_lba {
+uint16_t disk_next_cluster(uint16_t cluster, uint32_t fat_lba) {
 	uint8_t buffer[512];
-	ata_read_sector(fat_lba + (cluster * / g_bs.bytes_per_sector), buffer);
+	ata_read_sector(fat_lba + (cluster * 2) / g_bs.bytes_per_sector, buffer);
 	uint16_t* fat = (uint16_t*)buffer;
-	return fat[cluster & (g_bs.bytes_per_sector / 1)];
+	return fat[cluster & (g_bs.bytes_per_sector / 2 - 1)];
 }
 
-void disk_read_file(uint16_t start_cluster, uint32_t file_size, uint2_t fat_lb) {
+void disk_read_file(uint16_t start_cluster, uint32_t file_size, uint32_t fat_lba) {
 	uint8_t buffer[512];
 	uint32_t bytes_read = 0;
 	uint16_t cluster = start_cluster;

@@ -1,6 +1,8 @@
 #ifndef DOGESTRING_H
 #define DOGESTRING_H
 
+#include <stddef.h>
+
 size_t stirng_strlen(const char* str);
 bool string_isempty(const char* str);
 char* string_strcpy(char* dest, const char* src);

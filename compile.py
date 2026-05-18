@@ -9,7 +9,7 @@ import shutil
 import os
 
 # global variables, like the full gcc command
-gcc = "gcc -m32 -ffreestanding -nostdlib -Wall -Wextra -Werror -O2 -Iincldue/"
+gcc = "gcc -m32 -ffreestanding -nostdlib -Wall -Wextra -Werror -O2 -Iinclude"
 
 # define functions
 def run_cmd(command):
