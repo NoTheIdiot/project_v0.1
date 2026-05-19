@@ -9,7 +9,7 @@ import shutil
 import os
 
 # global variables, like the full gcc command
-gcc = "gcc -m32 -ffreestanding -nostdlib -Wall -Wextra -Werror -O2 -Iinclude"
+gcc = "gcc -m32 -ffreestanding -fno-pie -nostdlib -Wall -Wextra -Werror -O2 -I./include"
 
 # define functions
 def run_cmd(command):
@@ -34,12 +34,11 @@ with open("compilefile", "r") as file:
 
         else:
             random_string = str(random_var) + ""
-            print(random_string + shibe)
-            result = run_cmd(shibe)
+            result = run_cmd(doge)
             random_var += 1
 
 new_img = "windoge.img"
-create_img = f"dd if=/dev/zero of={new_img} bs=1M count=64";
+create_img = f"dd if=/dev/zero of={new_img} bs=1M count=16";
 inject_windoge = f"mcopy -i {new_img} windoge.bin a:"
 run_cmd(create_img)
 run_cmd(inject_windoge)

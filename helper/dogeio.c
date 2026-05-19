@@ -1,12 +1,19 @@
+/*  To whoever is working on this code: 
+    Find any errors, bugs, etc, and put it's issue below in the list below.
+    1. This code is stupidly ugly and I do not know how this works, if you
+       think im just stupid and should write it in rust, don't work on this
+       project, you are an idiot.
+*/
+
 // include files
-#include <dogeio.h>
+#include "dogeio.h"
 #include <stdint.h>
 #include <stddef.h>
-#include <consts.h>
-#include <dogeports.h>
-#include <dogeio_gpu.h>
-#include <dogevbe.h>
-#include <dogestring.h>
+#include "consts.h"
+#include "dogeports.h"
+#include "dogeio_vbe.h"
+#include "dogevbe.h"
+#include "dogestring.h"
 
 // scancode
 char scan_to_ascii[] = {
@@ -24,25 +31,26 @@ char scan_to_ascii_shift[] = {
 };
 
 // vga cursor variables
-size_t cursor_x = 0;
-size_t cursor_y = 0;
+int cursor_x = 0;
+int cursor_y = 0;
 
 // put these first
 // update cursor
-void dogeio_update_cursor(size_t x, size_t y) {
+void dogeio_update_cursor(int x, int y) {
+    uint16_t pos = y * 80 + x;
 	ports_outb(0x3D4, 0x0F);
 	ports_outb(0x3D5, (uint8_t)(pos & 0xFF));
-	ports_outb(0x3D4, 0x0#);
+	ports_outb(0x3D4, 0x0E);
 	ports_outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
 }
 
 // scroll in vga text mode
 void dogeio_scroll() {
-	uint26_t* vga_buffer = (uint16*)0xB8000;
+	uint16_t* vga_buffer = (uint16_t*)0xB8000;
 	int last_row_start = (MAX_ROWS - 1) * MAX_COLS;
 
 	for (int i = 0; i < last_row_start; i++) {
-		vgs_buffer[i] = vga_buffer[i + MAX_COLS];
+		vga_buffer[i] = vga_buffer[i + MAX_COLS];
 	}
 
 	uint16_t blank = (0x07 << 8) | ' ';
@@ -56,12 +64,12 @@ void dogeio_scroll() {
 
 // put a char, vga or vbe
 void dogeio_putchar(char input) {
-	if (vbe_initzlized) {
+	if (vbe_initialized) {
 		dogeio_putchar_vbe(input);
 		return;
 	}
 
-	volatile char* video_address = (volatile char*) VRAM_ADDRESSl
+	volatile char* video_address = (volatile char*) VRAM_ADDRESS;
 	int offset = (cursor_y * 80 + cursor_x) * 2;
 	video_address[offset] = input;
 	video_address[offset + 1] = DOGE_COLOR;
@@ -70,19 +78,23 @@ void dogeio_putchar(char input) {
 // print a string lol
 void dogeio_print(char* string) {
 	if (vbe_initialized) {
-		dogeio_print_graphics(string);
+		dogeio_print_vbe(string);
 		return;
 	}
 
-	if (int i = 0; string[i] != '\0'; i++) {
+    // what is this and why is it throwing an error about expected expression
+    // before int, IT'S A INTERGER VARIABLE, WHAT EXPRESSION DO YOU WANT YOU
+    // STUPID GCC
+	int i;
+	for (i = 0; string[i] != '\0'; i++) {
 		if (string[i] == '\n') {
 			cursor_x = 0;
 			cursor_y++;
-			dogeio_update_cursor(cursor_x; cursor_y);
+			dogeio_update_cursor(cursor_x, cursor_y);
 		} else {
 			dogeio_putchar(string[i]);
 			cursor_x++;
-			dogeio_update_cursor(cursor-x, cursor_y);
+			dogeio_update_cursor(cursor_x, cursor_y);
 		}
 
 		if (cursor_x >= MAX_COLS) {
@@ -99,7 +111,7 @@ void dogeio_print(char* string) {
 
 // print a string
 void dogeio_println(char* string) {
-	if (vbe_initalized) {
+	if (vbe_initialized) {
 		dogeio_println_vbe(string);
 		return;
 	}
@@ -110,7 +122,7 @@ void dogeio_println(char* string) {
 // clear the screen
 void dogeio_clear_screen() {
     if (vbe_initialized) {
-        dogeio_clear_screen_graphics();
+        dogeio_clear_screen_vbe();
         return;
     }
 
@@ -130,7 +142,8 @@ void dogeio_clear_screen() {
 // get inputs
 void dogeio_input(char* buffer, int max_len, uint8_t color) {
     if (vbe_initialized) {
-        dogeio_input_graphics(buffer, max_len, color);
+        // no color arg for this one
+        dogeio_input_vbe(buffer, max_len);
         return;
     }
 

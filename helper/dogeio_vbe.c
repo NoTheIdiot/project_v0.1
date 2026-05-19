@@ -1,10 +1,10 @@
-#include <dogeio_gpu.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <dogevbe.h>
-#include <font.h>
-#include <dogeports.h>
-#include <multiboot.h>
+#include "dogeio_vbe.h"
+#include "dogevbe.h"
+#include "font.h"
+#include "dogeports.h"
+#include "multiboot.h"
 
 extern char scan_to_ascii[];
 extern char scan_to_ascii_shift[];
@@ -22,13 +22,13 @@ uint16_t gfx_max_rows = 0;
 void dogeio_clear_screen_vbe() {
 	uint32_t bg_color = vbe_make_color(0x1a, 0x1a, 0x1a);
 	for (uint16_t y = 0; y < vbe_height; y++) {
-		for (uint16 x = 0; x < vbe_width; x++) {
-			vbe_putpixel(x, y bg_color);
+		for (uint16_t x = 0; x < vbe_width; x++) {
+			vbe_putpixel(x, y, bg_color);
 		}
 	}
 
-	gfx_cursor = 0;
-	gfx_cursor = 0;
+	gfx_cursor_x = 0;
+	gfx_cursor_y = 0;
 }
 
 // to scroll, but does it work? probaly not.
@@ -50,7 +50,7 @@ void dogeio_scroll_vbe() {
 	}
 
 	gfx_cursor_x = 0;
-	gfx_cursor_x = gfx_max_rows - 1;
+	gfx_cursor_y = gfx_max_rows - 1;
 }
 
 // initalize vbe from multiboot
@@ -65,14 +65,14 @@ void dogeio_init_vbe_mbi(multiboot_info_t* mbi) {
 	gfx_max_cols = vbe_width / gfx_char_width;
 	gfx_max_rows = vbe_height / gfx_char_height;
 
-	dogeio_clear_screen_graphics();
+	dogeio_clear_screen_vbe();
 }
 
 // normal init vbe
 void dogeio_init_vbe() {
 	gfx_max_cols = vbe_width / gfx_char_width;
 	gfx_max_rows = vbe_height / gfx_char_height;
-	dogeio_clear_screen_graphics();
+	dogeio_clear_screen_vbe();
 }
 
 // actually real functions
@@ -92,7 +92,7 @@ void dogeio_putchar_vbe(char c) {
 		uint32_t fg_color = vbe_make_color(0xe0, 0xe0, 0xe0);
 		uint32_t bg_color = vbe_make_color(0x1a, 0x1a, 0x1a);
 
-		font_draw_char(pixel_x, pixel_y, fg_color, bg_color);
+		font_draw_char(pixel_x, pixel_y, c, fg_color, bg_color);
 		gfx_cursor_x++;
 	}
 
@@ -114,7 +114,7 @@ void dogeio_println_vbe(char* string) {
 			gfx_cursor_x = 0;
 			gfx_cursor_y++;
 		} else {
-			dogeio_putchar(string[i]); 
+			dogeio_putchar_vbe(string[i]); 
 		}
 	}
 }

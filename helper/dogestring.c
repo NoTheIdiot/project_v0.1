@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// size of a string
 size_t string_strlen(const char* str) {
 	const char* string = str;
 	while (*string) s++;
@@ -91,7 +90,7 @@ bool string_strcmp(const char* string1, const char* string2) {
 	else false;
 }
 
-bool startsWith(const char* str, const char* prefix) {
+bool string_startsWith(const char* str, const char* prefix) {
     while (*prefix && *str == *prefix) ++str, ++prefix;
     return *prefix == 0;
 }

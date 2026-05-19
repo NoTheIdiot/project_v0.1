@@ -2,6 +2,7 @@
 #define DOGESTRING_H
 
 #include <stddef.h>
+#include "dogebool.h"
 
 size_t stirng_strlen(const char* str);
 bool string_isempty(const char* str);

@@ -1,5 +1,5 @@
 # boot
-dogec -c boot.asm -o boot.o
+nasm -f elf32 boot.asm -o boot.o
 
 # helpers
 dogec -c helper/dogeio.c -o dogeio.o
