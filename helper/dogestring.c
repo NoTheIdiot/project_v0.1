@@ -6,14 +6,14 @@
 
 size_t string_strlen(const char* str) {
 	const char* string = str;
-	while (*string) s++;
+	while (*string) string++;
 	return (size_t)(string - str);
 }
 
 // check if the string is completely empty, the null terminator (\0) doesn't
 // count
 bool string_isempty(const char* str) {
-	return (!str || !*str) ? string_true : string_false;
+	return (!str || !*str) ? true : false;
 }
 
 // copy a string
@@ -26,10 +26,17 @@ char* string_strcpy(char* dest, const char* src) {
 // copy a string with a limit of n
 char* string_strcpy(char* dest, const char* src, size_t n) {
 	size_t i;
-	for (i = 0; i < n && src[i]; i++) dest[i] = src[i];
-	for (i = 0; i < n; i++) dest[i] = '\0';
+	
+	for (i = 0; i < n && src[i] != '\0'; i++) {
+		dest[i] = src[i];
+	}
+	for (; i < n; i++) {
+		dest[i] = '\0';
+	}
+	
 	return dest;
 }
+
 
 // copy pure memory
 void* string_memcopy(void* dest, const void* src, size_t n) {

@@ -119,7 +119,7 @@ void dogeio_println_vbe(char* string) {
 	}
 }
 
-void dogeio_input_vbe(char* buffer. int max_len) {
+void dogeio_input_vbe(char* buffer, int max_len) {
 	size_t i = 0;
 	int shift = 0;
 	uint32_t fg_color = vbe_make_color(0xe0, 0xe0, 0xe0);
