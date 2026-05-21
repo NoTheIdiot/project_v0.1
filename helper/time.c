@@ -34,23 +34,32 @@ void time_update_time() {
 	time.second 	= time_read_rtc(0x00);
 	time.minute		= time_read_rtc(0x02);
 	time.hour		= time_read_rtc(0x04);
-	time.day		= time_read_rtc(0x05);
-	time.month		= time_read_rtc(0x07);
+	time.day		= time_read_rtc(0x07);
+	time.month		= time_read_rtc(0x08);
 	time.year		= time_read_rtc(0x09);
 
 	uint8_t status_b = time_read_rtc(0x0B);
 
 	if (!(status_b & 0x04)) {
-		time.second		= (time.second & 0x0F) + ((time.second / 16) * 10);
-		time.minute	 	= (time.minute & 0x0F) + ((time.minute / 16) * 10);
-		time.hour		= (time.hour & 0x0F) + ((time.hour / 16 ) * 10) | (time.hour & 0x80);
-		time.day		= (time.day & 0x0F) + ((time.day / 16) * 10);
-		time.month		= (time.month & 0x0F) + ((time.month / 16) * 10);
-		time.year		= (time.year & 0x0F) + ((time.year / 16) * 10);
+		time.second		= (time.second & 0x0F) + ((time.second >> 4) * 10);
+		time.minute	 	= (time.minute & 0x0F) + ((time.minute >> 4) * 10);
+		uint8_t hour_variable3 = time.hour & 0x80;
+		uint8_t hour_variable1 = (time.hour & 0x7F) & 0x0F;
+		uint8_t hour_variable2 = ((time.hour & 0x7F) >> 4) * 10;
+		time.hour		= (hour_variable1 + hour_variable2) | hour_variable3;
+		time.day		= (time.day & 0x0F) + ((time.day >> 4) * 10);
+		time.month		= (time.month & 0x0F) + ((time.month >> 4) * 10);
+		time.year		= (time.year & 0x0F) + ((time.year >> 4) * 10);
 	}
 
-	if (!(status_b & 0x02) && (time.hour & 0x80)) {
-		time.hour = ((time.hour & 0x7F) + 12) % 24;
+	if (!(status_b & 0x02)) {
+		uint8_t is_pm = time.hour & 0x80;
+		time.hour &= 0x7F;
+		if (is_pm && time.hour != 12) {
+			time.hour += 12;
+		} else if (!is_pm && time.hour == 12) {
+			time.hour = 0;
+		}
 	}
 }
 

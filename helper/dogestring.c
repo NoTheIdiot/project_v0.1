@@ -85,24 +85,15 @@ char* string_strcat(char* dest, const char* src) {
 	return dest;
 }
 
-char* string_strncat(char* dest, const char*, size_t n) {
-	char* d = dest;
-	while (*d) d++;
-	// how do you fix this
-	while (n-- && *src) *d++ = *src++;
-	*d = '\0';
-	return dest;
-}
-
 // compare strings
 bool string_strcmp(const char* string1, const char* string2) {
-''	while (*string1 && (*string == *string2)) {
+	while (*string1 && (*string1 == *string2)) {
 		string1++;
-		string2++
+		string2++;
 	}
 	int return_value = *(unsigned char*)string1 - *(unsigned char*)string2;
-	if (return_value == 0) return true;
-	else false;
+	if (return_value == 0) { return true; }
+	else { return false; }
 }
 
 bool string_startsWith(const char* str, const char* prefix) {
