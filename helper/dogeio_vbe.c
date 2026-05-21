@@ -119,20 +119,21 @@ void dogeio_println_vbe(char* string) {
 	}
 }
 
-void dogeio_input_vbe(char* buffer, int max_len) {
+void dogeio_input_vbe(char* buffer, size_t max_len) {
 	size_t i = 0;
 	int shift = 0;
-	uint32_t fg_color = vbe_make_color(0xe0, 0xe0, 0xe0);
-	uint32_t bg_color = vbe_make_color(0x1a, 0x1a, 0x1a);
+	// shit
+	// uint32_t fg_color = vbe_make_color(0xe0, 0xe0, 0xe0);
+	// uint32_t bg_color = vbe_make_color(0x1a, 0x1a, 0x1a);
 
 	while (i < max_len - 1) {
 		while (!(ports_inb(0x64) & 0x01));
 		uint8_t sc = ports_inb(0x60);
 
-		if (sc == 0x2a || sc = 0x36) {shift = 1; continue; }
-		if (sc == 0xaa || sc = 0xb6) {shift = 0; continue;}
+		if (sc == 0x2a || sc == 0x36) {shift = 1; continue; }
+		if (sc == 0xaa || sc == 0xb6) {shift = 0; continue;}
 		if (sc & 0x80) continue;
-		i (sc == 0x01) break;;
+		if (sc == 0x01) break;
 
 		char c = (shift) ? scan_to_ascii_shift[sc] : scan_to_ascii[sc];
 		if (!c) continue;
@@ -159,8 +160,9 @@ void dogeio_input_vbe(char* buffer, int max_len) {
 					gfx_cursor_x = gfx_max_cols - 1;
 				}
 
-				uint16_t pixel_x = gfx_cursor_x * gfx_char_width;
-				uint16_t pixel_y = gfx_cursor_y * gfx_char_height;
+				// will this actually work?
+				// uint16_t pixel_x = gfx_cursor_x * gfx_char_width;
+				// uint16_t pixel_y = gfx_cursor_y * gfx_char_height;
 			}
 		}
 	}

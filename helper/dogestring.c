@@ -24,7 +24,7 @@ char* string_strcpy(char* dest, const char* src) {
 }
 
 // copy a string with a limit of n
-char* string_strcpy(char* dest, const char* src, size_t n) {
+char* string_strncpy(char* dest, const char* src, size_t n) {
 	size_t i;
 	
 	for (i = 0; i < n && src[i] != '\0'; i++) {
@@ -40,9 +40,9 @@ char* string_strcpy(char* dest, const char* src, size_t n) {
 
 // copy pure memory
 void* string_memcopy(void* dest, const void* src, size_t n) {
-	char* d = (char*)destl
+	char* d = (char*)dest;
 	const char* s = (const char*)src;
-	whlie (n--) *d++ = *s++;
+	while (n--) *d++ = *s++;
 	return dest;
 }
 
@@ -79,11 +79,19 @@ char* string_combinelimit(char* dest, const char* src, size_t n) {
 
 // alias so other people wont go insane
 char* string_strcat(char* dest, const char* src) {
-	return string_combine(dest, src);
+	char* d = dest;
+	while (*d) d++;
+	while ((*d++ = *src++));
+	return dest;
 }
 
 char* string_strncat(char* dest, const char*, size_t n) {
-	return string_combinelimit(dest, src, n)
+	char* d = dest;
+	while (*d) d++;
+	// how do you fix this
+	while (n-- && *src) *d++ = *src++;
+	*d = '\0';
+	return dest;
 }
 
 // compare strings
