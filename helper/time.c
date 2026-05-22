@@ -68,17 +68,17 @@ void time_show() {
 	time_update_time();
 
 	if (time.hour < 10) dogeio_print("0");
-	    string_itoa(time.hour, buffer);
+	    string_itoa(time.hour, buffer, 10);
     dogeio_print(buffer);
     dogeio_print(":");
 
     if (time.minute < 10) dogeio_print("0");
-    string_itoa(time.minute, buffer);
+    string_itoa(time.minute, buffer, 10);
     dogeio_print(buffer);
     dogeio_print(":");
 
     if (time.second < 10) dogeio_print("0");
-    string_itoa(time.second, buffer);
+    string_itoa(time.second, buffer, 10);
     dogeio_print(buffer);
 }
 

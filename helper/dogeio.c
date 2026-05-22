@@ -140,7 +140,7 @@ void dogeio_clear_screen() {
 }
 
 // get inputs
-void dogeio_input(char* buffer, int max_len, uint8_t color) {
+void dogeio_input(char* buffer, int max_len) {
     if (vbe_initialized) {
         // no color arg for this one
         dogeio_input_vbe(buffer, max_len);
